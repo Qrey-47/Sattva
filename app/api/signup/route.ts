@@ -2,6 +2,7 @@ import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   try {
     const { firstName, lastName, email, password, dob } = await req.json();

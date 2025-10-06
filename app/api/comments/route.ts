@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
+export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   try {
     const { productSlug, userId, userName, comment, rating } = await req.json();

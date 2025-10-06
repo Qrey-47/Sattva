@@ -3,6 +3,7 @@ import { MongoClient } from "mongodb";
 import crypto from "crypto";
 
 const client = new MongoClient(process.env.MONGODB_URI!);
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
