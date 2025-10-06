@@ -1,0 +1,157 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated to darker green color scheme as requested */
+  --background: #ffffff; /* Pure white background */
+  --foreground: #1b4332; /* Very dark forest green text */
+  --card: #ffffff; /* Clean white card backgrounds */
+  --card-foreground: #1b4332; /* Dark green text on cards */
+  --popover: #ffffff; /* White popover backgrounds */
+  --popover-foreground: #1b4332; /* Dark green text in popovers */
+  --primary: #1b4332; /* Very dark forest green for primary actions */
+  --primary-foreground: #ffffff; /* White text on primary buttons */
+  --secondary: #2d5a3d; /* Rich dark green for secondary actions */
+  --secondary-foreground: #ffffff; /* White text on secondary buttons */
+  --muted: #f8fffe; /* Very light green-tinted background */
+  --muted-foreground: #2d5a3d; /* Rich dark green text on muted backgrounds */
+  --accent: #1b4332; /* Very dark forest green for accents */
+  --accent-foreground: #ffffff; /* White text on accent areas */
+  --destructive: #dc2626; /* Red for error messages */
+  --destructive-foreground: #ffffff; /* White text on destructive elements */
+  --border: #e8f5e8; /* Very light green borders */
+  --input: #ffffff; /* White input fields background */
+  --ring: #1b4332; /* Dark green focus ring color */
+  --chart-1: #1b4332; /* Dark green chart colors */
+  --chart-2: #2d5a3d; /* Rich dark green chart colors */
+  --chart-3: #52796f; /* Medium green chart colors */
+  --chart-4: #74a892; /* Light green chart colors */
+  --chart-5: #a8dadc; /* Very light green chart colors */
+  --radius: 0.5rem; /* Rounded corners */
+  --sidebar: #f8fffe; /* Very light green sidebar background */
+  --sidebar-foreground: #1b4332; /* Dark green sidebar text */
+  --sidebar-primary: #1b4332; /* Dark green primary sidebar action */
+  --sidebar-primary-foreground: #ffffff; /* White text on primary sidebar action */
+  --sidebar-accent: #2d5a3d; /* Rich dark green accent color for sidebar */
+  --sidebar-accent-foreground: #ffffff; /* White text on sidebar accent */
+  --sidebar-border: #e8f5e8; /* Light green sidebar border */
+  --sidebar-ring: #1b4332; /* Dark green focus ring on sidebar elements */
+}
+
+.dark {
+  /* Updated dark mode colors to match naturalistic theme */
+  --background: #0f2419; /* Very dark forest background */
+  --foreground: #a8dadc; /* Light green text */
+  --card: #1b4332; /* Dark forest green card */
+  --card-foreground: #a8dadc; /* Light green card text */
+  --popover: #0f2419; /* Very dark forest popover */
+  --popover-foreground: #a8dadc; /* Light green popover text */
+  --primary: #52796f; /* Medium green primary */
+  --primary-foreground: #ffffff; /* White text on primary */
+  --secondary: #1b4332; /* Dark forest green secondary */
+  --secondary-foreground: #a8dadc; /* Light green on secondary */
+  --muted: #1b4332; /* Dark forest green muted */
+  --muted-foreground: #74a892; /* Medium light green muted text */
+  --accent: #52796f; /* Medium green accent */
+  --accent-foreground: #ffffff; /* White on accent */
+  --destructive: #dc2626; /* Error red */
+  --destructive-foreground: #ffffff; /* White text on error */
+  --border: #2d5a3d; /* Rich dark green borders */
+  --input: #1b4332; /* Dark forest green input */
+  --ring: #52796f; /* Medium green focus ring */
+  --chart-1: #52796f; /* Medium green chart */
+  --chart-2: #2d5a3d; /* Rich dark green chart */
+  --chart-3: #1b4332; /* Dark forest green chart */
+  --chart-4: #0f2419; /* Very dark forest chart */
+  --chart-5: #a8dadc; /* Light green chart */
+  --sidebar: #1b4332; /* Dark forest green sidebar */
+  --sidebar-foreground: #a8dadc; /* Light green sidebar text */
+  --sidebar-primary: #52796f; /* Medium green sidebar primary */
+  --sidebar-primary-foreground: #ffffff; /* White text on sidebar primary */
+  --sidebar-accent: #2d5a3d; /* Rich dark green sidebar accent */
+  --sidebar-accent-foreground: #ffffff; /* White on sidebar accent */
+  --sidebar-border: #2d5a3d; /* Rich dark green sidebar border */
+  --sidebar-ring: #52796f; /* Medium green sidebar ring */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* Added custom font variables for naturalistic typography */
+  --font-sans: var(--font-geist);
+  --font-serif: var(--font-manrope);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Added naturalistic styling enhancements */
+.nature-gradient {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+}
+
+.floating-effect {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Updated naturalistic styling with darker green shadows */
+.organic-shadow {
+  box-shadow: 0 20px 40px -12px rgba(27, 67, 50, 0.15), 0 8px 16px -8px rgba(27, 67, 50, 0.1);
+}
+
+.leaf-pattern {
+  background-image: radial-gradient(circle at 20% 80%, rgba(27, 67, 50, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(45, 90, 61, 0.05) 0%, transparent 50%);
+}
