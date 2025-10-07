@@ -77,9 +77,3 @@ export async function POST(req: Request) {
 
   return new NextResponse("Webhook received", { status: 200 });
 }
-
-export const config = {
-  api: {
-    bodyParser: false, // Required for Stripe signature verification
-  },
-};
