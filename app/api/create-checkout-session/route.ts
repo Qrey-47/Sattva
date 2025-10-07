@@ -7,7 +7,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: Request) {
   try {
-    const { name, price } = await req.json();
+    const { name, price, email } = await req.json();
+
+    if (!name || !price || !email) {
+      throw new Error("Missing required fields: name, price, or email");
+    }
 
     // ✅ Convert and sanitize price
     const numericPrice = Math.round(
@@ -22,8 +26,10 @@ export async function POST(req: Request) {
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+    // ✅ Create a Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
+      customer_email: email, // 👈 This ensures Stripe attaches email to the payment
       line_items: [
         {
           price_data: {
@@ -35,13 +41,14 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      success_url: `${baseUrl}/success`,
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cancel`,
     });
 
+    // ✅ Return checkout URL
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
-    console.error("Stripe Error:", err);
+    console.error("Stripe Checkout Error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
