@@ -72,6 +72,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
     "vaul": "^0.9.9",
+    "vercel": "^48.2.4",
     "zod": "3.25.67"
   },
   "devDependencies": {
