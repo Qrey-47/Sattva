@@ -1,10 +1,4 @@
-import type { RouteSegmentConfig } from "next";
-
-const config: RouteSegmentConfig = {
-  runtime: "nodejs",   // ensures Node.js runtime
-  body: {
-    sizeLimit: "1mb",  // optional, adjust if needed
-  },
-};
-
-export default config;
+export const runtime = "nodejs"; // Ensures Stripe works with Node runtime
+export const preferredRegion = "auto"; // optional, for faster routing
+export const dynamic = "force-dynamic"; // ensures the webhook isn't statically cached
+export const maxDuration = 10; // seconds (optional limit for execution time)
