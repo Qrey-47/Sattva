@@ -1,8 +1,9 @@
 import Stripe from "stripe";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
+export const runtime = "nodejs"; // Required for Stripe Webhook
+export const dynamic = "force-dynamic"; // Prevents static optimization
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
@@ -24,9 +25,10 @@ async function sendInvoiceEmail(to: string, amount: number, currency: string, in
         htmlContent: `
           <h2>Thank you for your purchase!</h2>
           <p>We’ve received your payment of <strong>${amount} ${currency}</strong>.</p>
-          ${invoiceUrl
-            ? `<p>Download your invoice here: <a href="${invoiceUrl}" target="_blank">View Invoice</a></p>`
-            : "<p>Your invoice will be available soon.</p>"
+          ${
+            invoiceUrl
+              ? `<p>Download your invoice here: <a href="${invoiceUrl}" target="_blank">View Invoice</a></p>`
+              : "<p>Your invoice will be available soon.</p>"
           }
           <p>Best regards,<br/>Sattva Team</p>
         `,
@@ -39,12 +41,12 @@ async function sendInvoiceEmail(to: string, amount: number, currency: string, in
 }
 
 export async function POST(req: Request) {
-  const payload = await req.text();
-  const sig = req.headers.get("stripe-signature");
+  const sig = headers().get("stripe-signature");
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
-  let event: Stripe.Event;
+  const payload = await req.text();
 
+  let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(payload, sig!, endpointSecret);
   } catch (err: any) {
