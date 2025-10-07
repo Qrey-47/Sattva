@@ -13,23 +13,28 @@ export async function POST(req: Request) {
       throw new Error("Missing required fields: name, price, or email");
     }
 
-    // ✅ Convert and sanitize price
+    // Convert to smallest currency unit (cents)
     const numericPrice = Math.round(
       parseFloat(String(price).replace(/[^0-9.]/g, "")) * 100
     );
 
-    if (isNaN(numericPrice)) {
-      throw new Error(`Invalid price: ${price}`);
-    }
+    if (isNaN(numericPrice)) throw new Error(`Invalid price: ${price}`);
 
-    // ✅ Always include full URL scheme
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-    // ✅ Create a Stripe Checkout session
+    // ✅ Create or retrieve a customer so Stripe can email invoices
+    const customerList = await stripe.customers.list({ email });
+    const customer =
+      customerList.data.length > 0
+        ? customerList.data[0]
+        : await stripe.customers.create({ email });
+
+    // ✅ Create a Checkout Session
     const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      customer: customer.id, // 👈 Attach Stripe customer record
       payment_method_types: ["card"],
-      customer_email: email, // 👈 This ensures Stripe attaches email to the payment
       line_items: [
         {
           price_data: {
@@ -40,12 +45,12 @@ export async function POST(req: Request) {
           quantity: 1,
         },
       ],
-      mode: "payment",
       success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cancel`,
+      // 👇 Tell Stripe to automatically send invoice/receipt emails
+      invoice_creation: { enabled: true },
     });
 
-    // ✅ Return checkout URL
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
     console.error("Stripe Checkout Error:", err);
