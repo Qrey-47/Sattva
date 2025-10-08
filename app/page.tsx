@@ -1,21 +1,36 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, User, Star, Heart, Sparkles } from "lucide-react";
 import Link from "next/link";
-import UserMenu from "@/components/UserMenu";
 import { products } from "./data/products";
 
+type User = {
+  firstName: string;
+  lastName?: string;
+  email?: string;
+};
+
 export default function HomePage() {
-  const [user, setUser] = useState<{ firstName: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const bestSellersRef = useRef<HTMLElement | null>(null);
 
+  // Fetch current user from API
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/me");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.user) setUser(data.user);
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    };
+    fetchUser();
   }, []);
 
   useEffect(() => {
@@ -157,78 +172,83 @@ export default function HomePage() {
           {/* Footer */}
           <footer className="bg-primary text-primary-foreground py-16">
             <div className="container mx-auto px-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <img
-                      src="/logosattva.jpg"
-                      alt="SATTVA SKIN Logo"
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <h5 className="text-xl font-bold font-sans">SATTVA SKIN</h5>
+              <footer className="bg-primary text-primary-foreground py-16">
+                <div className="container mx-auto px-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <img
+                          src="/logosattva.jpg"
+                          alt="SATTVA SKIN Logo"
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <h5 className="text-xl font-bold font-sans">SATTVA SKIN</h5>
+                      </div>
+                      <p className="text-primary-foreground/80 font-serif">
+                        Natural skincare for your beautiful journey.
+                      </p>
+                    </div>
+                    <div>
+                      <h6 className="font-semibold mb-4 font-sans">Quick Links</h6>
+                      <ul className="space-y-2 font-serif">
+                        {["About Us", "Products", "Reviews", "Contact"].map((item) => (
+                          <li key={item}>
+                            <a
+                              href="#"
+                              className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+                            >
+                              {item}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h6 className="font-semibold mb-4 font-sans">Customer Care</h6>
+                      <ul className="space-y-2 font-serif">
+                        {["Shipping Info", "Returns", "FAQ", "Support"].map((item) => (
+                          <li key={item}>
+                            <a
+                              href="#"
+                              className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+                            >
+                              {item}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h6 className="font-semibold mb-4 font-sans">Newsletter</h6>
+                      <p className="text-primary-foreground/80 mb-4 font-serif">
+                        Get skincare tips and exclusive offers.
+                      </p>
+                      <div className="flex gap-2">
+                        <input
+                          type="email"
+                          placeholder="Your email"
+                          className="flex-1 px-3 py-2 rounded bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/60 border border-primary-foreground/20 font-serif"
+                        />
+                        <Button variant="secondary" size="sm" className="font-serif">
+                          Subscribe
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-primary-foreground/80 font-serif">
-                    Natural skincare for your beautiful journey.
-                  </p>
-                </div>
-                <div>
-                  <h6 className="font-semibold mb-4 font-sans">Quick Links</h6>
-                  <ul className="space-y-2 font-serif">
-                    {["About Us", "Products", "Reviews", "Contact"].map((item) => (
-                      <li key={item}>
-                        <a
-                          href="#"
-                          className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
-                        >
-                          {item}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h6 className="font-semibold mb-4 font-sans">Customer Care</h6>
-                  <ul className="space-y-2 font-serif">
-                    {["Shipping Info", "Returns", "FAQ", "Support"].map((item) => (
-                      <li key={item}>
-                        <a
-                          href="#"
-                          className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
-                        >
-                          {item}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h6 className="font-semibold mb-4 font-sans">Newsletter</h6>
-                  <p className="text-primary-foreground/80 mb-4 font-serif">
-                    Get skincare tips and exclusive offers.
-                  </p>
-                  <div className="flex gap-2">
-                    <input
-                      type="email"
-                      placeholder="Your email"
-                      className="flex-1 px-3 py-2 rounded bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/60 border border-primary-foreground/20 font-serif"
-                    />
-                    <Button variant="secondary" size="sm" className="font-serif">
-                      Subscribe
-                    </Button>
+                  <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
+                    <p className="text-primary-foreground/80 font-serif">
+                      © 2024 SATTVA SKIN. All rights reserved.
+                    </p>
                   </div>
                 </div>
-              </div>
-              <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
-                <p className="text-primary-foreground/80 font-serif">
-                  © 2024 SATTVA SKIN. All rights reserved.
-                </p>
-              </div>
+              </footer>
             </div>
           </footer>
         </div>
 
-        {/* ---------------- Right Column: Advertisements ---------------- */}
+        {/* Right Column: Advertisements */}
         <aside className="hidden lg:block space-y-6 sticky top-8 h-fit">
+          {/* Ad Cards */}
           <Card className="p-0 overflow-hidden">
             <img src="/ads/ad1.jpg" alt="Ad 1" className="w-full h-48 object-cover" />
             <CardContent className="p-4">
@@ -256,6 +276,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
         </aside>
+
       </div>
     </div>
   );

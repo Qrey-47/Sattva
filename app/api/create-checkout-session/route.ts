@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb"; // your MongoDB connection
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-    // ✅ Create or retrieve a customer so Stripe can email invoices
+    // ✅ Create or retrieve a customer
     const customerList = await stripe.customers.list({ email });
     const customer =
       customerList.data.length > 0
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     // ✅ Create a Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      customer: customer.id, // 👈 Attach Stripe customer record
+      customer: customer.id,
       payment_method_types: ["card"],
       line_items: [
         {
@@ -49,8 +50,19 @@ export async function POST(req: Request) {
       ],
       success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cancel`,
-      // 👇 Tell Stripe to automatically send invoice/receipt emails
       invoice_creation: { enabled: true },
+    });
+
+    // ✅ Store the order in MongoDB as "pending"
+    const client = await clientPromise;
+    const db = client.db("test"); // your DB name
+    await db.collection("orders").insertOne({
+      stripeSessionId: session.id,
+      customerEmail: email,
+      productName: name,
+      amount: numericPrice / 100, // store in USD
+      status: "pending",
+      createdAt: new Date(),
     });
 
     return NextResponse.json({ url: session.url });

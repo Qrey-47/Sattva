@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb"; // MongoDB connection
 
 export const runtime = "nodejs"; // Required for Stripe Webhook
 export const dynamic = "force-dynamic"; // Prevents static optimization
@@ -43,7 +44,6 @@ async function sendInvoiceEmail(to: string, amount: number, currency: string, in
 export async function POST(req: Request) {
   const sig = headers().get("stripe-signature");
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
   const payload = await req.text();
 
   let event: Stripe.Event;
@@ -66,8 +66,27 @@ export async function POST(req: Request) {
       invoiceUrl = invoice.hosted_invoice_url || null;
     }
 
+    // ✅ Send receipt email
     if (customerEmail) {
       await sendInvoiceEmail(customerEmail, Number(amount), currency, invoiceUrl);
+    }
+
+    // ✅ Update order in MongoDB
+    try {
+      const client = await clientPromise;
+      const db = client.db("test"); // your DB name
+      const result = await db.collection("orders").updateOne(
+        { stripeSessionId: session.id },
+        { $set: { status: "completed", updatedAt: new Date() } }
+      );
+
+      if (result.matchedCount === 0) {
+        console.warn(`⚠️ No order found for session ID: ${session.id}`);
+      } else {
+        console.log(`✅ Order updated to completed for session ID: ${session.id}`);
+      }
+    } catch (err) {
+      console.error("❌ Failed to update order in MongoDB:", err);
     }
   }
 
