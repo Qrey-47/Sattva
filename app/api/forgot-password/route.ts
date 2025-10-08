@@ -1,6 +1,8 @@
 // /app/api/forgot-password/route.ts
 import { MongoClient } from "mongodb";
 import crypto from "crypto";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const client = new MongoClient(process.env.MONGODB_URI!);
 export const dynamic = "force-dynamic";

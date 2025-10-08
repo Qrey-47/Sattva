@@ -1,8 +1,9 @@
 // src/app/api/signout/route.ts
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
     const sessionId = req.cookies.get("sessionId")?.value;

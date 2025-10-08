@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 export const dynamic = "force-dynamic";
 const uri = process.env.MONGODB_URI as string; // put your Atlas connection string in .env.local
 const client = new MongoClient(uri);
+export const runtime = "nodejs";
 
 export async function GET() {
   try {
